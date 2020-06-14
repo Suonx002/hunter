@@ -7,8 +7,8 @@ const tableNames = require('../tableNames');
  * @param {Knex} knex
  */
 
-exports.up = async (knex) => {
-  await knex.schema.createTable(tableNames.users, (table) => {
+exports.up = (knex) => {
+  return knex.schema.createTable(tableNames.users, (table) => {
     table.increments('id').notNullable();
     table.string('name').notNullable();
     table.string('email', 254).notNullable().unique();
@@ -17,6 +17,6 @@ exports.up = async (knex) => {
   });
 };
 
-exports.down = async (knex) => {
-  await knex.schema.dropTableIfExists(tableNames.users);
+exports.down = (knex) => {
+  return knex.schema.dropTableIfExists(tableNames.users);
 };

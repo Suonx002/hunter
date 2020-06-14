@@ -7,8 +7,8 @@ const tableNames = require('../tableNames');
  * @param {Knex} knex
  */
 
-exports.up = async (knex) => {
-  await knex.schema.createTable(tableNames.tasks, (table) => {
+exports.up = (knex) => {
+  return knex.schema.createTable(tableNames.tasks, (table) => {
     table.increments('id').notNullable();
     table.string('company_name').notNullable();
     table.string('job_title').notNullable();
@@ -16,10 +16,15 @@ exports.up = async (knex) => {
     table.string('location');
     table.string('salary');
     table.string('post_url');
-    table.foreign('user_id').references('id').inTable(tableNames.users);
+    table.integer('user_id').unsigned().notNullable();
+    table
+      .foreign('user_id')
+      .references('id')
+      .inTable(tableNames.users)
+      .onDelete('cascade');
   });
 };
 
-exports.down = async (knex) => {
-  await knex.schema.dropTableIfExists(tableNames.tasks);
+exports.down = (knex) => {
+  return knex.schema.dropTableIfExists(tableNames.tasks);
 };
