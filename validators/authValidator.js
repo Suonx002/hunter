@@ -1,12 +1,17 @@
 const { check } = require('express-validator');
+const bcrypt = require('bcryptjs');
+
+const hashPassword = async (password) => {
+  // salt with 12
+  return await bcrypt.hash(password, 12);
+};
+const comparePassword = async (password, databasePassword) => {
+  return await bcrypt.compare(password, databasePassword);
+};
 
 const checkRegister = [
-  check('name').isEmpty().withMessage('Name must not be empty'),
-  check('email').isEmpty().withMessage('Email must not be empty'),
-  check('password').isEmpty().withMessage('Password must not be empty'),
-  check('passwordConfirm')
-    .isEmpty()
-    .withMessage('Password confirm must not be empty'),
+  check('name').notEmpty().withMessage('Name must not be empty'),
+  check('email').notEmpty().withMessage('Email must not be empty'),
   check('email').isEmail().withMessage('Email is not valid'),
   check('password')
     .isLength({ min: 5 })
@@ -17,11 +22,13 @@ const checkRegister = [
 ];
 
 const checkLogin = [
-  check('email').isEmpty().withMessage('Email must not be empty'),
-  check('password').isEmpty().withMessage('Password must not be empty'),
+  check('email').notEmpty().withMessage('Email must not be empty'),
+  check('password').notEmpty().withMessage('Password must not be empty'),
 ];
 
 module.exports = {
+  hashPassword,
+  comparePassword,
   checkRegister,
   checkLogin,
 };
