@@ -9,14 +9,18 @@ const globalErrorHandler = require('./controllers/errorController');
 const AppError = require('./utils/appError');
 
 const userRouter = require('./routes/userRouter');
+const authRouter = require('./routes/authRouter');
 
 // middlewares
+app.use(express.json());
+app.use(express.urlencoded({ extended: false }));
 if (process.env.NODE_ENV === 'development') {
   app.use(morgan('dev'));
 }
 
 // routes
 app.use('/api/v1/users', userRouter);
+app.use('/api/v1/auth', authRouter);
 
 app.all('*', (req, res, next) => {
   next(new AppError(`Can't find ${req.originalUrl} on this server!`, 400));
