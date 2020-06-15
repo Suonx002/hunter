@@ -4,9 +4,11 @@ const morgan = require('morgan');
 
 dotenv.config({ path: './config.env' });
 
-const userRouter = require('./routes/userRouter');
-
 const app = express();
+const globalErrorHandler = require('./controllers/errorController');
+const AppError = require('./utils/appError');
+
+const userRouter = require('./routes/userRouter');
 
 // middlewares
 if (process.env.NODE_ENV === 'development') {
@@ -15,6 +17,13 @@ if (process.env.NODE_ENV === 'development') {
 
 // routes
 app.use('/api/v1/users', userRouter);
+
+app.all('*', (req, res, next) => {
+  next(new AppError(`Can't find ${req.originalUrl} on this server!`, 400));
+});
+
+// Global express handling errors middleware
+app.use(globalErrorHandler);
 
 const PORT = process.env.PORT || 5000;
 
