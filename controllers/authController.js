@@ -1,10 +1,14 @@
 const AppError = require('../utils/appError');
 const catchAsync = require('../utils/catchAsync');
+const validationResult = require('../validators/validationResult');
 
 const db = require('../db/db');
 const tableNames = require('../db/tableNames');
 
 const register = catchAsync(async (req, res, next) => {
+  // check for body validation
+  validationResult(req, res);
+
   const [createUser] = await db(tableNames.users)
     .insert(req.body)
     .returning('*');
@@ -16,6 +20,9 @@ const register = catchAsync(async (req, res, next) => {
 });
 
 const login = catchAsync(async (req, res, next) => {
+  // check for body validation
+  validationResult(req, res);
+
   const { email, password } = req.body;
 
   const user = await db(tableNames.users).where({ email, password });
